@@ -33,7 +33,7 @@ const HeroSection = () => {
     : "https://wallpapercave.com/wp/wp1890607.jpg";
 
   return (
-    <div className="relative h-127 mx-8 my-2 rounded-xl border border-white/20 overflow-hidden">
+    <div className="relative h-130 mx-8 my-2 rounded-xl border border-white/20 overflow-hidden">
       <img
         key={movie.id}
         src={imageUrl}
@@ -44,6 +44,12 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex flex-col justify-between p-8">
         <div>
+          <button 
+            onClick={() => navigate('/view-all/trending')}
+            className="absolute top-8 right-8 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition border border-white/20 cursor-pointer"
+          >
+            See All
+          </button>
           <div className="inline-flex items-center gap-2 bg-orange-500/20 backdrop-blur-sm border border-orange-500/30 rounded-full px-4 py-1 mb-2">
             <i className="ri-fire-fill text-orange-500"></i>
             <span className="text-white text-sm font-medium">Now Trending</span>

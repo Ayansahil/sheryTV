@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { searchMulti, clearSearch } from '../store/movieSlice';
 
 const Topbar = () => {
   const [query, setQuery] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { searchResults, status } = useSelector((state) => state.movie);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -21,7 +23,7 @@ const Topbar = () => {
   }, [query, dispatch]);
 
   return (
-    <div className="flex items-center justify-between w-full px-8 py-4 bg-[#1A1625] relative z-50">
+    <div className="sticky top-0 flex items-center justify-between w-full px-8 py-4 bg-[#1A1625] z-50">
       {/* Search Bar */}
       <div className="relative flex items-center gap-3 bg-[#2A2238] rounded-2xl border border-white/20 px-5 py-3 w-125">
         <i className="ri-search-line text-gray-400 text-lg"></i>
@@ -45,7 +47,7 @@ const Topbar = () => {
                     <Link 
                       to={`/movie/${item.media_type}/${item.id}`} 
                       className="flex items-center gap-3 p-3"
-                      onClick={() => setQuery('')} // Close dropdown on click
+                      onClick={() => setQuery('')}
                     >
                       <img 
                         src={item.poster_path || item.profile_path ? `https://image.tmdb.org/t/p/w92${item.poster_path || item.profile_path}` : 'https://via.placeholder.com/92x138?text=No+Image'} 
@@ -74,15 +76,19 @@ const Topbar = () => {
       {/* Right Side - Notification & Profile */}
       <div className="flex items-center gap-4">
         {/* Notification Bell */}
-        <button className="relative p-2 hover:bg-white/5 rounded-full transition">
+        <button className="relative p-2 hover:bg-white/5 rounded-full transition cursor-pointer">
           <i className="ri-notification-3-line text-gray-300 text-xl"></i>
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
         {/* Profile Picture */}
-        <button className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 ">
+        <button 
+          onClick={() => navigate('/settings')}
+          className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 cursor-pointer"
+        >
           <img
-            src="https://plus.unsplash.com/premium_photo-1664015982598-283bcdc9cae8?q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            key={user?.avatar}
+            src={user?.avatar || "https://plus.unsplash.com/premium_photo-1664015982598-283bcdc9cae8?q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
             alt="Profile"
             className="w-full h-full object-cover"
           />

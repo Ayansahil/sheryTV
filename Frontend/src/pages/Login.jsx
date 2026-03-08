@@ -5,16 +5,32 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
-    const [form, setForm] = useState({ name: '', email: '', password: '' });
+    const [form, setForm] = useState({ username: '', email: '', password: '' });
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { status, error } = useSelector(state => state.auth);
+    const [localError, setLocalError] = useState('');
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLocalError('');
+
         if (isLogin) {
+            if (!form.email || !form.password) {
+                setLocalError("Please fill in all fields");
+                return;
+            }
             const result = await dispatch(login({ email: form.email, password: form.password }));
             if (result.meta.requestStatus === 'fulfilled') navigate('/');
         } else {
+            if (!form.username || !form.email || !form.password) {
+                setLocalError("Please fill in all fields");
+                return;
+            }
+            if (form.password.length < 6) {
+                setLocalError("Password must be at least 6 characters");
+                return;
+            }
             const result = await dispatch(register(form));
             if (result.meta.requestStatus === 'fulfilled') navigate('/');
         }
@@ -42,7 +58,7 @@ const Login = () => {
                     <div className="flex bg-white/5 rounded-xl p-1 mb-6">
                         <button
                             onClick={() => setIsLogin(true)}
-                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
                                 isLogin ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'
                             }`}
                         >
@@ -50,7 +66,7 @@ const Login = () => {
                         </button>
                         <button
                             onClick={() => setIsLogin(false)}
-                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
                                 !isLogin ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'
                             }`}
                         >
@@ -62,12 +78,12 @@ const Login = () => {
                     <div className="flex flex-col gap-4">
                         {!isLogin && (
                             <div>
-                                <label className="text-gray-400 text-sm mb-1 block">Full Name</label>
+                                <label className="text-gray-400 text-sm mb-1 block">Username</label>
                                 <input
                                     type="text"
-                                    placeholder="John Doe"
-                                    value={form.name}
-                                    onChange={e => setForm({ ...form, name: e.target.value })}
+                                    placeholder="johndoe"
+                                    value={form.username}
+                                    onChange={e => setForm({ ...form, username: e.target.value })}
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition"
                                 />
                             </div>
@@ -94,9 +110,9 @@ const Login = () => {
                         </div>
 
                         {/* Error */}
-                        {error && (
+                        {(error || localError) && (
                             <p className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">
-                                {error}
+                                {localError || error}
                             </p>
                         )}
 
@@ -104,7 +120,7 @@ const Login = () => {
                         <button
                             onClick={handleSubmit}
                             disabled={status === 'loading'}
-                            className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 text-white py-3 rounded-xl font-medium transition flex items-center justify-center gap-2"
+                            className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 text-white py-3 rounded-xl font-medium transition flex items-center justify-center gap-2 cursor-pointer"
                         >
                             {status === 'loading' ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

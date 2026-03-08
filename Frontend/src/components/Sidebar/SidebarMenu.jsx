@@ -1,67 +1,48 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const SidebarMenu = () => {
+  const location = useLocation();
+  
+  const isActive = (path) => location.pathname === path;
+  
+  const menuItem = (to, icon, label) => (
+    <Link 
+      to={to} 
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition group ${
+        isActive(to) 
+          ? 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20' 
+          : 'text-gray-400 hover:text-white'
+      }`}
+    >
+      <i className={`${icon} text-lg`}></i>
+      <span className="text-sm font-medium truncate">{label}</span>
+    </Link>
+  );
+
   return (
     <nav className="flex-1 flex flex-col px-3 py-4 overflow-y-auto">
-      {/* Main Menu Items */}
       <div className="space-y-1 mb-4">
-        <Link to="/" className="flex items-center gap-3 px-3 py-2.5 text-purple-400 bg-purple-500/10 rounded-lg hover:bg-purple-500/20 transition group">
-          <i className="ri-home-4-fill text-lg"></i>
-          <span className="text-sm font-medium truncate">Home</span>
-        </Link>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-compass-3-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Explore</span>
-        </a>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-stack-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Genres</span>
-        </a>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-bookmark-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Favourites</span>
-        </a>
+        {menuItem('/', 'ri-home-4-fill', 'Home')}
+        {menuItem('/explore', 'ri-compass-3-line', 'Explore')}
+        {menuItem('/genres', 'ri-stack-line', 'Genres')}
+        {menuItem('/people', 'ri-user-star-line', 'People')}
+        {menuItem('/favourites', 'ri-bookmark-line', 'Favourites')}
       </div>
 
-      {/* Divider */}
       <div className="h-px bg-white/5 my-2"></div>
 
-      {/* Secondary Menu Items */}
       <div className="space-y-1 mb-4">
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-play-circle-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Continue Watching</span>
-        </a>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-time-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Recently Added</span>
-        </a>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-folder-3-line text-lg"></i>
-          <span className="text-sm font-medium truncate">My Collections</span>
-        </a>
-
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-download-2-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Downloads</span>
-        </a>
+        {menuItem('/continue-watching', 'ri-play-circle-line', 'Continue Watching')}
+        {menuItem('/recently-added', 'ri-time-line', 'Recently Added')}
+        {menuItem('/collections', 'ri-folder-3-line', 'My Collections')}
+        {menuItem('/downloads', 'ri-download-2-line', 'Downloads')}
       </div>
 
-      {/* Divider */}
       <div className="h-px bg-white/5 my-2"></div>
 
-      {/* Settings */}
       <div className="space-y-1">
-        <a href="#" className="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition group">
-          <i className="ri-settings-3-line text-lg"></i>
-          <span className="text-sm font-medium truncate">Settings</span>
-        </a>
+        {menuItem('/settings', 'ri-settings-3-line', 'Settings')}
       </div>
     </nav>
   );

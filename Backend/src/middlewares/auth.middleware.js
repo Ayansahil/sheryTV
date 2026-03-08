@@ -36,6 +36,13 @@ const protect = async (req, res, next) => {
       });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: "Account banned.",
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {
@@ -49,4 +56,15 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const adminOnly = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: "Admin access required.",
+    });
+  }
+};
+
+module.exports = { protect, adminOnly };

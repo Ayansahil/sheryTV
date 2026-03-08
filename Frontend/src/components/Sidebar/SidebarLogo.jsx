@@ -12,7 +12,7 @@ const SidebarLogo = () => {
       </div>
 
       {/* Collapse Icon */}
-      <button className="text-gray-400 hover:text-white transition shrink-0 p-1 rounded hover:bg-white/5">
+      <button className="text-gray-400 hover:text-white transition shrink-0 p-1 rounded hover:bg-white/5 cursor-pointer">
         <i className="ri-sidebar-fold-line text-xl"></i>
       </button>
     </div>

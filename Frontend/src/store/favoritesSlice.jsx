@@ -5,7 +5,7 @@ export const fetchFavorites = createAsyncThunk('favorites/fetch',
     async (_, { rejectWithValue }) => {
         try {
             const { data } = await getFavorites();
-            return data;
+            return data.favorites; 
         } catch (err) {
             return rejectWithValue(err.response?.data);
         }
@@ -22,7 +22,7 @@ export const toggleFavorite = createAsyncThunk('favorites/toggle',
                 return { removed: true, movieId: movieData.movieId };
             } else {
                 const { data } = await addFavorite(movieData);
-                return { removed: false, data };
+                return { removed: false, data: data.favorite }; // ← yeh fix karo
             }
         } catch (err) {
             return rejectWithValue(err.response?.data);
@@ -37,7 +37,7 @@ const favoritesSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchFavorites.fulfilled, (state, action) => {
-                state.items = action.payload;
+                state.items = Array.isArray(action.payload) ? action.payload : [];
             })
             .addCase(toggleFavorite.fulfilled, (state, action) => {
                 if (action.payload.removed) {

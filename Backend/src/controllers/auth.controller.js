@@ -32,6 +32,7 @@ const sendTokenResponse = (user, statusCode, res, message) => {
         email: user.email,
         avatar: user.avatar,
         createdAt: user.createdAt,
+        role: user.role,
       },
     });
 };
@@ -67,6 +68,8 @@ const signup = async (req, res, next) => {
     sendTokenResponse(user, 201, res, "Account created successfully.");
   } catch (error) {
     next(error);
+    
+    
   }
 };
 
@@ -137,6 +140,7 @@ const getMe = async (req, res, next) => {
         email: user.email,
         avatar: user.avatar,
         createdAt: user.createdAt,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -144,4 +148,33 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login, logout, getMe };
+// @desc    Update user profile (avatar)
+// @route   PUT /api/auth/update-profile
+// @access  Private
+const updateProfile = async (req, res, next) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id, 
+      { avatar }, 
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        createdAt: user.createdAt,
+        role: user.role,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signup, login, logout, getMe, updateProfile };

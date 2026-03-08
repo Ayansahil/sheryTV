@@ -15,6 +15,7 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [trailer, setTrailer] = useState(null);
   const [similar, setSimilar] = useState([]);
+  const [cast, setCast] = useState([]);
   const [showTrailer, setShowTrailer] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -24,14 +25,16 @@ const MovieDetail = () => {
     const fetchAll = async () => {
       setLoading(true);
       try {
-        const [detailRes, videoRes, similarRes] = await Promise.all([
+        const [detailRes, videoRes, similarRes, creditsRes] = await Promise.all([
           axios.get(`${type}/${id}?language=en-US`),
           axios.get(`${type}/${id}/videos?language=en-US`),
           axios.get(`${type}/${id}/similar?language=en-US&page=1`),
+          axios.get(`${type}/${id}/credits?language=en-US`),
         ]);
 
         setMovie(detailRes.data);
         setSimilar(similarRes.data.results?.slice(0, 10) || []);
+        setCast(creditsRes.data.cast?.slice(0, 10) || []);
 
         const trailerVideo = videoRes.data.results?.find(
           (v) => v.type === "Trailer" && v.site === "YouTube",
@@ -45,9 +48,12 @@ const MovieDetail = () => {
               movieId: String(detailRes.data.id),
               title: detailRes.data.title || detailRes.data.name,
               poster: detailRes.data.poster_path,
-              backdrop: detailRes.data.backdrop_path,
+              releaseYear: (
+                detailRes.data.release_date || detailRes.data.first_air_date
+              )?.split("-")[0],
+              genre: detailRes.data.genres?.[0]?.name || "",
+              rating: detailRes.data.vote_average,
               media_type: type,
-              watchedAt: new Date().toISOString(),
             }),
           );
         }
@@ -80,7 +86,7 @@ const MovieDetail = () => {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 right-8 z-50 flex items-center gap-2 bg-black/50 backdrop-blur px-4 py-2 rounded-lg hover:bg-black/70 transition"
+        className="absolute top-4 right-8 z-50 flex items-center gap-2 bg-black/50 backdrop-blur px-4 py-2 rounded-lg hover:bg-black/70 transition cursor-pointer"
       >
         <i className="ri-arrow-left-line" /> Back
       </button>
@@ -137,7 +143,7 @@ const MovieDetail = () => {
         {/* Trailer Button */}
         <button
           onClick={() => (trailer ? setShowTrailer(true) : null)}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition cursor-pointer ${
             trailer
               ? "bg-purple-600 hover:bg-purple-500"
               : "bg-gray-700 cursor-not-allowed"
@@ -156,11 +162,16 @@ const MovieDetail = () => {
                   movieId: String(movie.id),
                   title: movie.title || movie.name,
                   poster: movie.poster_path,
+                  releaseYear: (
+                    movie.release_date || movie.first_air_date
+                  )?.split("-")[0],
+                  genre: movie.genres?.[0]?.name || "",
+                  rating: movie.vote_average,
                   media_type: type,
-                }),
+                })
               )
             }
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition border ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition border cursor-pointer ${
               isFav
                 ? "bg-pink-500/20 border-pink-500/50 text-pink-400"
                 : "bg-white/10 border-white/20 hover:bg-white/20"
@@ -171,6 +182,40 @@ const MovieDetail = () => {
           </button>
         )}
       </div>
+
+      {/* Cast */}
+      {cast.length > 0 && (
+        <div className="px-8 pb-8">
+          <h2 className="text-xl font-medium mb-4">Cast</h2>
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+            {cast.map((person) => (
+              <div
+                key={person.id}
+                onClick={() => navigate(`/people/${person.id}`)}
+                className="shrink-0 w-32 cursor-pointer group"
+              >
+                <div className="relative rounded-full overflow-hidden w-24 h-24 mx-auto mb-2 border-2 border-transparent group-hover:border-purple-500 transition-colors">
+                  <img
+                    src={
+                      person.profile_path
+                        ? `https://image.tmdb.org/t/p/w200${person.profile_path}`
+                        : `https://ui-avatars.com/api/?name=${person.name}&background=random`
+                    }
+                    alt={person.name}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                  />
+                </div>
+                <p className="text-sm text-center font-medium truncate text-white group-hover:text-purple-400 transition-colors">
+                  {person.name}
+                </p>
+                <p className="text-xs text-center text-gray-400 truncate">
+                  {person.character}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Similar Movies */}
       {similar.length > 0 && (
@@ -213,7 +258,7 @@ const MovieDetail = () => {
           >
             <button
               onClick={() => setShowTrailer(false)}
-              className="absolute -top-10 right-0 text-white text-2xl hover:text-purple-400"
+              className="absolute -top-10 right-0 text-white text-2xl hover:text-purple-400 cursor-pointer"
             >
               <i className="ri-close-line" />
             </button>
