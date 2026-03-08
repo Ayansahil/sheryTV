@@ -2,8 +2,13 @@ require("dotenv").config();
 const app = require("./src/app");
 const connectDb = require("./src/config/database");
 
-connectDb();
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000 ✅");
+// Connect to DB and then start the server
+connectDb(app, PORT);
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err) => {
+  console.error(`❌ Unhandled Rejection: ${err.message}`);
+  process.exit(1);
 });

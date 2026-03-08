@@ -43,7 +43,7 @@ const Topbar = () => {
                 {searchResults.map((item) => (
                   <li key={item.id} className="hover:bg-white/5 transition border-b border-white/5 last:border-none">
                     <Link 
-                      to={`/${item.media_type}/${item.id}`} 
+                      to={`/movie/${item.media_type}/${item.id}`} 
                       className="flex items-center gap-3 p-3"
                       onClick={() => setQuery('')} // Close dropdown on click
                     >

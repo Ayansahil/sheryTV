@@ -25,6 +25,18 @@ export const fetchPopular = createAsyncThunk(
   },
 );
 
+export const fetchRecentlyAdded = createAsyncThunk(
+  "movie/fetchRecentlyAdded",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("movie/now_playing?language=en-US&page=1");
+      return response.data.results;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
 export const searchMulti = createAsyncThunk(
   "movie/searchMulti",
   async (query, { rejectWithValue }) => {
@@ -45,6 +57,7 @@ const movieSlice = createSlice({
     searchResults: [],
     trending: [],     
     popular: [],
+    recentlyAdded: [],
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   },
@@ -72,6 +85,9 @@ const movieSlice = createSlice({
       })
       .addCase(fetchPopular.fulfilled, (state, action) => {
         state.popular = action.payload;
+      })
+      .addCase(fetchRecentlyAdded.fulfilled, (state, action) => {
+        state.recentlyAdded = action.payload;
       });
   },
 });

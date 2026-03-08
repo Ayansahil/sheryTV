@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTrending } from "../store/movieSlice";
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { trending } = useSelector((state) => state.movie);
   const [current, setCurrent] = useState(0);
 
@@ -68,7 +70,10 @@ const HeroSection = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-[#9e72e0] hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-medium transition cursor-pointer">
+          <button 
+            onClick={() => navigate(`/movie/${movie.media_type || 'movie'}/${movie.id}`)}
+            className="flex items-center gap-2 bg-[#9e72e0] hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-medium transition cursor-pointer"
+          >
             <i className="ri-play-fill text-lg"></i>
             Watch Now
           </button>
