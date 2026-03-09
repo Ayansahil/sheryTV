@@ -34,9 +34,9 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../../Frontend/dist")));
-  app.get("/{*splat}",(req, res) => {
-    res.sendFile(path.join(__dirname, "../../Frontend/dist/index.html"));
+  app.use(express.static(path.join(__dirname, "../public")));
+  app.get("/{*splat}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
   });
 }
 
