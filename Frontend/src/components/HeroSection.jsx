@@ -33,7 +33,7 @@ const HeroSection = () => {
     : "https://wallpapercave.com/wp/wp1890607.jpg";
 
   return (
-    <div className="relative h-130 mx-8 my-2 rounded-xl border border-white/20 overflow-hidden">
+    <div className="relative h-96 md:h-130 mx-4 md:mx-8 my-2 rounded-xl border border-white/20 overflow-hidden">
       <img
         key={movie.id}
         src={imageUrl}
@@ -42,11 +42,11 @@ const HeroSection = () => {
       />
       <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-transparent"></div>
 
-      <div className="relative z-10 h-full flex flex-col justify-between p-8">
+      <div className="relative z-10 h-full flex flex-col justify-between p-4 md:p-8">
         <div>
           <button 
             onClick={() => navigate('/view-all/trending')}
-            className="absolute top-8 right-8 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition border border-white/20 cursor-pointer"
+            className="absolute top-4 right-4 md:top-8 md:right-8 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition border border-white/20 cursor-pointer"
           >
             See All
           </button>
@@ -66,11 +66,11 @@ const HeroSection = () => {
             )}
           </div>
 
-          <h1 className="text-5xl font-normal text-white mb-2 mt-18 max-w-xl">
+          <h1 className="text-3xl md:text-5xl font-normal text-white mb-2 mt-4 md:mt-18 max-w-xl">
             {movie.title || movie.name}
           </h1>
 
-          <p className="text-gray-300 text-base max-w-lg leading-relaxed mb-12 line-clamp-3">
+          <p className="text-gray-300 text-sm md:text-base max-w-lg leading-relaxed mb-8 md:mb-12 line-clamp-2 md:line-clamp-3">
             {movie.overview || "No description available."}
           </p>
         </div>
@@ -92,7 +92,7 @@ const HeroSection = () => {
         </div>
 
         {/* Dots - click karke switch karo */}
-        <div className="absolute bottom-8 right-8 flex gap-2">
+        <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex gap-2">
           {trending.slice(0, 5).map((_, i) => (
             <div
               key={i}

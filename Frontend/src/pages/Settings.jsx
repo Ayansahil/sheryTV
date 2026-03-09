@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getProfile, updateProfile, changePassword } from '../services/api';
-import Topbar from '../components/Topbar';
 
 const Settings = () => {
     const { user, isAuthenticated } = useSelector(state => state.auth);
@@ -45,7 +44,7 @@ const Settings = () => {
 
         // Max 2MB check
         if (file.size > 2 * 1024 * 1024) {
-            setMessage({ type: 'error', text: 'Image 2MB se chhoti honi chahiye' });
+            setMessage({ type: 'error', text: 'Image must be smaller than 2MB.' });
             return;
         }
 
@@ -53,7 +52,7 @@ const Settings = () => {
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreview(reader.result);
-            setImageBase64(reader.result); // base64 string with data:image prefix
+            setImageBase64(reader.result); 
         };
         reader.readAsDataURL(file);
     };
@@ -68,10 +67,10 @@ const Settings = () => {
                 payload.fileName = fileName;
             }
             await updateProfile(payload);
-            setMessage({ type: 'success', text: 'Profile update ho gaya!' });
+            setMessage({ type: 'success', text: 'Profile updated successfully!' });
             setImageBase64('');
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Kuch error aaya' });
+            setMessage({ type: 'error', text: err.response?.data?.message || 'Something went wrong.' });
         } finally {
             setSaving(false);
         }
@@ -79,21 +78,21 @@ const Settings = () => {
 
     const handlePasswordChange = async () => {
         if (newPassword !== confirmPassword) {
-            setMessage({ type: 'error', text: 'New passwords match nahi kar rahe' });
+            setMessage({ type: 'error', text: 'New passwords do not match.' });
             return;
         }
         if (newPassword.length < 6) {
-            setMessage({ type: 'error', text: 'Password kam se kam 6 characters ka hona chahiye' });
+            setMessage({ type: 'error', text: 'Password must be at least 6 characters long.' });
             return;
         }
         setSaving(true);
         setMessage({ type: '', text: '' });
         try {
             await changePassword({ currentPassword, newPassword });
-            setMessage({ type: 'success', text: 'Password change ho gaya!' });
+            setMessage({ type: 'success', text: 'Password changed successfully!' });
             setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Password change failed' });
+            setMessage({ type: 'error', text: err.response?.data?.message || 'Password change failed.' });
         } finally {
             setSaving(false);
         }
@@ -106,9 +105,16 @@ const Settings = () => {
 
     return (
         <div className="min-h-screen bg-[#1A1625]">
-            <Topbar />
-            <div className="max-w-2xl mx-auto px-6 py-8">
-                <h1 className="text-2xl font-bold text-white mb-6">Settings</h1>
+            <div className="max-w-2xl mx-auto px-4 md:px-8 py-8">
+                <div className="flex items-center gap-4 mb-6">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center text-white transition cursor-pointer"
+                    >
+                        <i className="ri-arrow-left-line" />
+                    </button>
+                    <h1 className="text-2xl font-bold text-white">Settings</h1>
+                </div>
 
                 {/* Tabs */}
                 <div className="flex bg-white/5 border border-white/10 rounded-xl p-1 gap-1 mb-6">

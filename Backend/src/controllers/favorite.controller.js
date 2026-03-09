@@ -29,7 +29,7 @@ const addFavorite = async (req, res, next) => {
     if (!movieId || !title) {
       return res.status(400).json({
         success: false,
-        message: "movieId aur title required hain.",
+        message: "Movie ID and title are required.",
       });
     }
 
@@ -38,7 +38,7 @@ const addFavorite = async (req, res, next) => {
     if (existing) {
       return res.status(400).json({
         success: false,
-        message: "Yeh movie already favorites mein hai.",
+        message: "This movie is already in favorites.",
       });
     }
 
@@ -54,7 +54,7 @@ const addFavorite = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: `"${title}" favorites mein add ho gaya.`,
+      message: `"${title}" was added to favorites.`,
       favorite,
     });
   } catch (error) {
@@ -77,13 +77,13 @@ const removeFavorite = async (req, res, next) => {
     if (!favorite) {
       return res.status(404).json({
         success: false,
-        message: "Yeh movie favorites mein nahi mili.",
+        message: "This movie was not found in favorites.",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: `"${favorite.title}" favorites se remove ho gaya.`,
+      message: `"${favorite.title}" was removed from favorites.`,
     });
   } catch (error) {
     next(error);

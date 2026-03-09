@@ -9,14 +9,14 @@ const SidebarMenu = () => {
   const menuItem = (to, icon, label) => (
     <Link 
       to={to} 
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition group ${
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition group lg:justify-start justify-center ${
         isActive(to) 
           ? 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20' 
           : 'text-gray-400 hover:text-white'
       }`}
     >
       <i className={`${icon} text-lg`}></i>
-      <span className="text-sm font-medium truncate">{label}</span>
+      <span className="text-sm font-medium truncate hidden lg:inline">{label}</span>
     </Link>
   );
 

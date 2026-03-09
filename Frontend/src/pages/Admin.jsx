@@ -3,6 +3,62 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getAdminStats, getAdminUsers, banAdminUser, deleteAdminUser } from '../services/api';
 
+const MobileAdminSidebar = ({ isOpen, onClose, activeTab, setActiveTab, onNavigate }) => {
+    if (!isOpen) return null;
+
+    const tabs = [
+        { id: 'dashboard', icon: 'ri-dashboard-line', label: 'Dashboard' },
+        { id: 'users', icon: 'ri-group-line', label: 'Users' },
+    ];
+
+    return (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/60" onClick={onClose}></div>
+            {/* Content */}
+            <div className="relative w-64 h-full bg-[#1A1625] border-r border-white/5 flex flex-col p-4">
+                <div className="flex items-center justify-between gap-2 mb-8 px-2">
+                    <div className="flex items-center gap-2">
+                        <i className="ri-shield-fill text-purple-400 text-xl" />
+                        <span className="text-white font-bold">Admin Panel</span>
+                    </div>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white">
+                        <i className="ri-close-line text-2xl" />
+                    </button>
+                </div>
+
+                {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => {
+                            setActiveTab(tab.id);
+                            onClose();
+                        }}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition mb-1 cursor-pointer w-full ${
+                            activeTab === tab.id
+                                ? 'bg-purple-600 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                        <i className={tab.icon} />
+                        {tab.label}
+                    </button>
+                ))}
+
+                <div className="mt-auto">
+                    <button
+                        onClick={() => onNavigate('/')}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition w-full cursor-pointer"
+                    >
+                        <i className="ri-arrow-left-line" />
+                        Back to App
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const Admin = () => {
     const { user, isAuthenticated } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -12,6 +68,7 @@ const Admin = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     // Admin check
     useEffect(() => {
@@ -68,11 +125,19 @@ const Admin = () => {
 
     return (
         <div className="min-h-screen bg-[#0f0d1a] flex">
+            <MobileAdminSidebar
+                isOpen={isMobileSidebarOpen}
+                onClose={() => setMobileSidebarOpen(false)}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                onNavigate={navigate}
+            />
+
             {/* Admin Sidebar */}
-            <div className="w-56 bg-[#1A1625] border-r border-white/5 flex flex-col p-4 fixed h-full">
-                <div className="flex items-center gap-2 mb-8 px-2">
-                    <i className="ri-shield-fill text-purple-400 text-xl" />
-                    <span className="text-white font-bold">Admin Panel</span>
+            <div className="hidden md:flex flex-col min-h-screen md:w-20 lg:w-56 bg-[#1A1625] border-r border-white/5 p-4 transition-all duration-300">
+                <div className="flex items-center gap-2 mb-8 px-2 md:justify-center lg:justify-start">
+                    <i className="ri-shield-fill text-purple-400 text-xl shrink-0" />
+                    <span className="text-white font-bold hidden lg:inline">Admin Panel</span>
                 </div>
 
                 {[
@@ -82,35 +147,42 @@ const Admin = () => {
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition mb-1 cursor-pointer ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition mb-1 cursor-pointer md:justify-center lg:justify-start ${
                             activeTab === tab.id
                                 ? 'bg-purple-600 text-white'
                                 : 'text-gray-400 hover:text-white hover:bg-white/5'
                         }`}
                     >
-                        <i className={tab.icon} />
-                        {tab.label}
+                        <i className={`${tab.icon} text-lg`} />
+                        <span className="hidden lg:inline">{tab.label}</span>
                     </button>
                 ))}
 
                 <div className="mt-auto">
                     <button
                         onClick={() => navigate('/')}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition w-full cursor-pointer"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition w-full cursor-pointer md:justify-center lg:justify-start"
                     >
-                        <i className="ri-arrow-left-line" />
-                        Back to App
+                        <i className="ri-arrow-left-line text-lg" />
+                        <span className="hidden lg:inline">Back to App</span>
                     </button>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div className="ml-56 flex-1 p-8">
+            <div className="md:ml-20 lg:ml-56 flex-1 p-4 sm:p-8 w-full min-w-0">
+                {/* Mobile Header */}
+                <div className="md:hidden flex items-center justify-between mb-6">
+                    <button onClick={() => setMobileSidebarOpen(true)} className="text-white text-2xl">
+                        <i className="ri-menu-line" />
+                    </button>
+                    <h1 className="text-xl font-bold text-white capitalize">{activeTab}</h1>
+                </div>
 
                 {/* Dashboard Tab */}
                 {activeTab === 'dashboard' && stats && (
                     <div>
-                        <h1 className="text-2xl font-bold text-white mb-6">Dashboard</h1>
+                        <h1 className="text-2xl font-bold text-white mb-6 hidden md:block">Dashboard</h1>
 
                         {/* Stats Cards */}
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -167,33 +239,33 @@ const Admin = () => {
                 {activeTab === 'users' && (
                     <div>
                         <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-2xl font-bold text-white">Users ({users.length})</h1>
+                            <h1 className="text-2xl font-bold text-white hidden md:block">Users ({users.length})</h1>
                             <input
                                 type="text"
                                 placeholder="Search users..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500 w-64"
+                                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500 w-40 sm:w-64"
                             />
                         </div>
 
-                        <div className="bg-[#1A1625] border border-white/5 rounded-2xl overflow-hidden">
-                            <table className="w-full">
+                        <div className="bg-[#1A1625] border border-white/5 rounded-2xl overflow-x-auto">
+                            <table className="w-full min-w-[600px]">
                                 <thead>
                                     <tr className="border-b border-white/5">
                                         <th className="text-left text-gray-400 text-sm font-medium px-6 py-4">User</th>
                                         <th className="text-left text-gray-400 text-sm font-medium px-6 py-4">Role</th>
                                         <th className="text-left text-gray-400 text-sm font-medium px-6 py-4">Status</th>
-                                        <th className="text-left text-gray-400 text-sm font-medium px-6 py-4">Joined</th>
+                                        <th className="text-left text-gray-400 text-sm font-medium px-6 py-4 hidden md:table-cell">Joined</th>
                                         <th className="text-right text-gray-400 text-sm font-medium px-6 py-4">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredUsers.map(u => (
                                         <tr key={u._id} className="border-b border-white/5 last:border-0 hover:bg-white/2 transition">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-400 font-bold text-sm">
+                                            <td className="px-4 md:px-6 py-4">
+                                                <div className="flex flex-col items-start text-left sm:flex-row sm:items-center gap-2 sm:gap-3">
+                                                    <div className="w-9 h-9 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-400 font-bold text-sm shrink-0">
                                                         {u.name?.[0]?.toUpperCase()}
                                                     </div>
                                                     <div>
@@ -220,7 +292,7 @@ const Admin = () => {
                                                     {u.isBanned ? 'Banned' : 'Active'}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-gray-400 text-sm">
+                                            <td className="px-6 py-4 text-gray-400 text-sm hidden md:table-cell">
                                                 {new Date(u.createdAt).toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4">

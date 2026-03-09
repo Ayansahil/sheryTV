@@ -53,20 +53,20 @@ const People = () => {
             <div className="px-8 py-6">
                 <h1 className="text-2xl font-bold text-white mb-6">Popular People</h1>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-6">
                     {people.map((person, i) => (
                         <div
                             key={`${person.id}-${i}`}
                             onClick={() => navigate(`/people/${person.id}`)}
                             className="group cursor-pointer text-center"
                         >
-                            <div className="relative rounded-2xl overflow-hidden mb-3">
+                            <div className="relative rounded-2xl overflow-hidden mb-3 aspect-[2/3]">
                                 <img
                                     src={person.profile_path
                                         ? `https://image.tmdb.org/t/p/w300${person.profile_path}`
                                         : `https://ui-avatars.com/api/?name=${person.name}&background=9e72e0&color=fff&size=300`}
                                     alt={person.name}
-                                    className="w-full h-64 object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                                    className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="absolute bottom-3 left-0 right-0 text-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -80,7 +80,7 @@ const People = () => {
 
                     {loading && Array(12).fill(0).map((_, i) => (
                         <div key={i} className="animate-pulse">
-                            <div className="w-full h-64 bg-white/5 rounded-2xl mb-3" />
+                            <div className="w-full aspect-[2/3] bg-white/5 rounded-2xl mb-3" />
                             <div className="h-3 bg-white/5 rounded w-3/4 mx-auto mb-1" />
                             <div className="h-3 bg-white/5 rounded w-1/2 mx-auto" />
                         </div>

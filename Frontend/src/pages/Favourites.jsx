@@ -18,9 +18,9 @@ const Favourites = () => {
     return (
       <div className="min-h-screen bg-[#1A1625] flex flex-col items-center justify-center text-white">
         <i className="ri-heart-line text-6xl text-purple-400 mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Login Required</h2>
-        <p className="text-gray-400 mb-6">
-          Favourites dekhne ke liye login karo
+        <h2 className="text-2xl font-bold mb-2">Login to View Favorites</h2>
+        <p className="text-gray-400 mb-6 text-center max-w-xs">
+          Please log in to see your favorite movies and TV shows.
         </p>
         <button
           onClick={() => navigate("/login")}
@@ -47,9 +47,9 @@ const Favourites = () => {
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <i className="ri-heart-line text-6xl text-purple-400/50 mb-4" />
-            <p className="text-gray-400 text-lg">Koi favourite nahi hai abhi</p>
+            <p className="text-gray-400 text-lg">You have no favorites yet.</p>
             <p className="text-gray-500 text-sm mt-1">
-              Movies pe jaake heart icon dabao
+              Press the heart icon on movies to add them.
             </p>
             <button
               onClick={() => navigate("/")}
@@ -59,7 +59,7 @@ const Favourites = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-4">
             {items.map((item) => (
               <div key={item.movieId} className="group relative cursor-pointer">
                 <div className="relative rounded-xl overflow-hidden aspect-[2/3]">

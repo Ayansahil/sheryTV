@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFavorite } from '../store/favoritesSlice';
+import { toast } from 'react-toastify';
 import axios from '../components/axios';
 import Topbar from '../components/Topbar';
 
@@ -138,7 +139,7 @@ const Explore = () => {
                 )}
 
                 {/* Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-4">
                     {movies.map((item, index) => (
                         <div
                             key={`${item.id}-${index}`}
@@ -181,6 +182,9 @@ const Explore = () => {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            if (!isFav(item.id)) {
+                                                toast.success(`Added "${item.title || item.name}" to favorites!`);
+                                            }
                                             dispatch(toggleFavorite({
                                                 movieId: String(item.id),
                                                 title: item.title || item.name,
@@ -222,7 +226,7 @@ const Explore = () => {
                 {/* End of results */}
                 {page >= totalPages && movies.length > 0 && (
                     <p className="text-center text-gray-500 text-sm py-6">
-                        Sab content load ho gaya! 🎬
+                        You've reached the end! 🎬
                     </p>
                 )}
             </div>

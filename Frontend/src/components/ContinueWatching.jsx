@@ -19,7 +19,7 @@ const ContinueWatching = () => {
   if (!isAuthenticated || items.length === 0) return null;
 
   return (
-    <div className="w-full px-8 py-4">
+    <div className="w-full px-4 md:px-8 py-4">
       <div className="flex items-center justify-between mb-4">
         {isHomePage ? (
             <h2 className="text-white text-xl font-medium">Continue Watching</h2>

@@ -55,13 +55,13 @@ const changePassword = async (req, res, next) => {
 
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Current password galat hai' });
+            return res.status(400).json({ success: false, message: 'Incorrect current password.' });
         }
 
         user.password = await bcrypt.hash(newPassword, 10);
         await user.save();
 
-        res.json({ success: true, message: 'Password change ho gaya!' });
+        res.json({ success: true, message: 'Password changed successfully!' });
     } catch (err) { next(err); }
 };
 

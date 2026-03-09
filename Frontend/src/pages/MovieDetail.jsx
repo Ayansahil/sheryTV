@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../components/axios";
 import { saveToHistory } from "../store/historySlice";
+import { toast } from 'react-toastify';
 import { toggleFavorite, fetchFavorites } from "../store/favoritesSlice";
 
 const MovieDetail = () => {
@@ -22,6 +23,11 @@ const MovieDetail = () => {
   const isFav = favorites?.find((f) => f.movieId === String(id));
 
   useEffect(() => {
+    if (type === 'person') {
+      navigate(`/people/${id}`, { replace: true });
+      return;
+    }
+
     const fetchAll = async () => {
       setLoading(true);
       try {
@@ -66,7 +72,7 @@ const MovieDetail = () => {
 
     fetchAll();
     if (isAuthenticated) dispatch(fetchFavorites());
-  }, [id, type, isAuthenticated]);
+  }, [id, type, isAuthenticated, navigate]);
 
   if (loading)
     return (
@@ -102,8 +108,8 @@ const MovieDetail = () => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1625] via-[#1A1625]/60 to-transparent" />
 
-        {/* Movie Info Overlay */}
-        <div className="absolute bottom-8 left-8 right-8 flex gap-6 items-end">
+        {/* Movie Info Overlay */}_
+        <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex gap-6 items-end">
           {movie.poster_path && (
             <img
               src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
@@ -112,7 +118,7 @@ const MovieDetail = () => {
             />
           )}
           <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-2xl md:text-4xl font-bold mb-2">
               {movie.title || movie.name}
             </h1>
             <div className="flex gap-3 flex-wrap mb-3">
@@ -131,7 +137,7 @@ const MovieDetail = () => {
                 </span>
               ))}
             </div>
-            <p className="text-gray-300 max-w-2xl line-clamp-2">
+            <p className="text-gray-300 max-w-2xl line-clamp-2 text-sm md:text-base">
               {movie.overview}
             </p>
           </div>
@@ -139,11 +145,11 @@ const MovieDetail = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="px-8 py-6 flex gap-3 flex-wrap">
+      <div className="px-4 md:px-8 py-6 flex gap-3 flex-wrap">
         {/* Trailer Button */}
         <button
           onClick={() => (trailer ? setShowTrailer(true) : null)}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition cursor-pointer ${
             trailer
               ? "bg-purple-600 hover:bg-purple-500"
               : "bg-gray-700 cursor-not-allowed"
@@ -156,22 +162,25 @@ const MovieDetail = () => {
         {/* Favorite Button */}
         {isAuthenticated && (
           <button
-            onClick={() =>
-              dispatch(
-                toggleFavorite({
-                  movieId: String(movie.id),
-                  title: movie.title || movie.name,
-                  poster: movie.poster_path,
-                  releaseYear: (
-                    movie.release_date || movie.first_air_date
-                  )?.split("-")[0],
-                  genre: movie.genres?.[0]?.name || "",
-                  rating: movie.vote_average,
-                  media_type: type,
-                })
-              )
+            onClick={() => {
+                if (!isFav) {
+                    toast.success(`Added "${movie.title || movie.name}" to favorites!`);
+                }
+                dispatch(
+                    toggleFavorite({
+                        movieId: String(movie.id),
+                        title: movie.title || movie.name,
+                        poster: movie.poster_path,
+                        releaseYear: (
+                            movie.release_date || movie.first_air_date
+                        )?.split("-")[0],
+                        genre: movie.genres?.[0]?.name || "",
+                        rating: movie.vote_average,
+                        media_type: type,
+                    })
+                )}
             }
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition border cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition border cursor-pointer ${
               isFav
                 ? "bg-pink-500/20 border-pink-500/50 text-pink-400"
                 : "bg-white/10 border-white/20 hover:bg-white/20"
@@ -185,7 +194,7 @@ const MovieDetail = () => {
 
       {/* Cast */}
       {cast.length > 0 && (
-        <div className="px-8 pb-8">
+        <div className="px-4 md:px-8 pb-8">
           <h2 className="text-xl font-medium mb-4">Cast</h2>
           <div className="flex gap-4 overflow-x-auto scrollbar-hide">
             {cast.map((person) => (
@@ -219,7 +228,7 @@ const MovieDetail = () => {
 
       {/* Similar Movies */}
       {similar.length > 0 && (
-        <div className="px-8 pb-8">
+        <div className="px-4 md:px-8 pb-8">
           <h2 className="text-xl font-medium mb-4">Similar</h2>
           <div className="flex gap-4 overflow-x-auto scrollbar-hide">
             {similar.map((item) => (

@@ -16,7 +16,7 @@ const RecentlyAdded = () => {
 
     if (nowPlaying.length === 0) {
         return (
-            <div className="w-full px-8 py-4">
+            <div className="w-full px-4 md:px-8 py-4">
                 <h2 className="text-white text-xl font-medium mb-4">Recently Added</h2>
                 <div className="flex gap-4">
                     {[1,2,3,4,5].map(i => (
@@ -28,7 +28,7 @@ const RecentlyAdded = () => {
     }
 
     return (
-        <div className="w-full px-8 py-4">
+        <div className="w-full px-4 md:px-8 py-4">
             <div className="flex items-center justify-between mb-4">
                 {isHomePage ? (
                     <h2 className="text-white text-xl font-medium">Recently Added</h2>

@@ -31,7 +31,7 @@ const addToHistory = async (req, res, next) => {
     if (!movieId || !title) {
       return res.status(400).json({
         success: false,
-        message: "movieId aur title required hain.",
+        message: "Movie ID and title are required.",
       });
     }
 
@@ -57,7 +57,7 @@ const addToHistory = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: `"${title}" watch history mein add/update ho gaya.`,
+      message: `"${title}" was added/updated in watch history.`,
       history,
     });
   } catch (error) {
@@ -80,13 +80,13 @@ const removeFromHistory = async (req, res, next) => {
     if (!history) {
       return res.status(404).json({
         success: false,
-        message: "Yeh movie watch history mein nahi mili.",
+        message: "This movie was not found in watch history.",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: `"${history.title}" watch history se remove ho gaya.`,
+      message: `"${history.title}" was removed from watch history.`,
     });
   } catch (error) {
     next(error);
@@ -102,7 +102,7 @@ const clearHistory = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Watch history clear ho gayi.",
+      message: "Watch history has been cleared.",
     });
   } catch (error) {
     next(error);

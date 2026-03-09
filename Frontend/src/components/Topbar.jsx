@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { searchMulti, clearSearch } from '../store/movieSlice';
+import { toggleMobileSidebar } from '../store/uiSlice';
 
 const Topbar = () => {
   const [query, setQuery] = useState('');
@@ -17,15 +18,23 @@ const Topbar = () => {
       } else {
         dispatch(clearSearch());
       }
-    }, 500); // Debounce for 500ms
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [query, dispatch]);
 
   return (
-    <div className="sticky top-0 flex items-center justify-between w-full px-8 py-4 bg-[#1A1625] z-50">
+    <div className="sticky top-0 flex items-center justify-between w-full px-4 md:px-8 py-4 bg-[#1A1625] z-50 gap-4">
+      {/* Hamburger Menu Icon (for mobile) */}
+      <button
+        onClick={() => dispatch(toggleMobileSidebar())}
+        className="text-gray-300 text-xl md:hidden"
+      >
+        <i className="ri-menu-line"></i>
+      </button>
+
       {/* Search Bar */}
-      <div className="relative flex items-center gap-3 bg-[#2A2238] rounded-2xl border border-white/20 px-5 py-3 w-125">
+      <div className="relative flex items-center gap-3 bg-[#2A2238] rounded-2xl border border-white/20 px-5 py-3 flex-1 md:flex-none md:w-125">
         <i className="ri-search-line text-gray-400 text-lg"></i>
         <input
           type="text"
@@ -42,15 +51,18 @@ const Topbar = () => {
             
             {status === 'succeeded' && searchResults.length > 0 && (
               <ul>
-                {searchResults.map((item) => (
-                  <li key={item.id} className="hover:bg-white/5 transition border-b border-white/5 last:border-none">
+                {searchResults.map((item) => {
+                  const linkTo = item.media_type === 'person' ? `/people/${item.id}` : `/movie/${item.media_type}/${item.id}`;
+                  const fallbackName = item.title || item.name;
+                  return (
+                  <li key={`${item.id}-${item.media_type}`} className="hover:bg-white/5 transition border-b border-white/5 last:border-none">
                     <Link 
-                      to={`/movie/${item.media_type}/${item.id}`} 
+                      to={linkTo}
                       className="flex items-center gap-3 p-3"
                       onClick={() => setQuery('')}
                     >
                       <img 
-                        src={item.poster_path || item.profile_path ? `https://image.tmdb.org/t/p/w92${item.poster_path || item.profile_path}` : 'https://via.placeholder.com/92x138?text=No+Image'} 
+                        src={item.poster_path || item.profile_path ? `https://image.tmdb.org/t/p/w92${item.poster_path || item.profile_path}` : `https://ui-avatars.com/api/?name=${fallbackName}&background=2d1b69&color=fff`} 
                         alt={item.title || item.name} 
                         className="w-10 h-14 object-cover rounded bg-gray-800"
                       />
@@ -62,7 +74,8 @@ const Topbar = () => {
                       </div>
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             )}
 
